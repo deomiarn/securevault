@@ -14,7 +14,7 @@ Schrittweise Checkliste zum Durcharbeiten. Phasen bauen aufeinander auf.
 - [x] application.properties mit Profilen (dev/prod) fuer vault-service
 - [x] application.properties mit Profilen (dev/prod) fuer audit-service
 - [x] application.properties mit Profilen (dev/prod) fuer gateway
-- [ ] .env Datei fuer Docker-Secrets (nicht committen)
+- [x] .env Datei fuer Docker-Secrets (nicht committen)
 
 ---
 
