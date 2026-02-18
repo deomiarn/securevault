@@ -1,7 +1,10 @@
 package com.securevault.auth.entity;
 
+import com.securevault.auth.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,7 +46,8 @@ public class User {
 
     @Column(length = 50)
     @Builder.Default
-    private String role = "USER";
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     @Column(name = "totp_secret")
     private String totpSecret;
