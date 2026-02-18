@@ -1,0 +1,2 @@
+- Schaue das README.md immer am Anfang an, um das Projekt zu verstehen. 
+- Schaue die TODO.md TODO Liste immer am Anfang an, um den aktuellen Stand zu verstehen.
