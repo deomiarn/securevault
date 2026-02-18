@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.securevault'
 version = '0.0.1-SNAPSHOT'
-description = 'Kümmert sich um Logging und Compliance'
+description = 'API Gateway: Routing, Rate Limiting, JWT Validation'
 
 java {
 	toolchain {

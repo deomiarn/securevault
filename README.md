@@ -9,6 +9,17 @@ security, auth and data protection.
 The application is build using react for frontend and a microservice architecture for the backend with java spring boot
 services and a postgresql database with redis for caching and rate limiting.
 
+## Tech Stack
+
+| Layer      | Technology                                |
+|------------|-------------------------------------------|
+| Backend    | Java 21, Spring Boot 4.0.2, Gradle 9.3.0 |
+| Database   | PostgreSQL 16                             |
+| Cache      | Redis 7                                   |
+| Frontend   | React 18, TypeScript, Vite                |
+| Security   | JWT RS256, Argon2id, AES-256-GCM, TOTP   |
+| Deployment | Docker, Docker Compose                    |
+
 ## Key Features
 
 - Encryption: All data is encrypted using strong encryption algorithms to ensure confidentiality.
@@ -80,7 +91,7 @@ services have only a single responsibility and can be developed, tested, and dep
 - Docker & Docker Compose
 
 ```bash
-git clone https://github.com/username/securevault.git
+git clone <repository-url>
 cd securevault
 
 # Start PostgreSQL and Redis
