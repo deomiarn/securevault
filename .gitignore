@@ -1,3 +1,5 @@
 .idea
 .env
 *.DS_Store
+# JWT Private Key – darf nie committed werden
+private.pem
