@@ -1,6 +1,7 @@
 package com.securevault.auth.config;
 
 import com.securevault.auth.service.JwtService;
+import com.securevault.auth.service.TokenBlacklistService;
 import com.securevault.auth.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,7 +23,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
-
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -34,6 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         if (!jwtService.validateToken(token)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String tokenId = jwtService.extractTokenId(token);
+        if (tokenBlacklistService.isBlacklisted(tokenId)) {
             filterChain.doFilter(request, response);
             return;
         }

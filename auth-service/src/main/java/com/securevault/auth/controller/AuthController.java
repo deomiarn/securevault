@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,8 +39,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(@Valid @RequestBody RefreshRequest request) {
-        authService.logout(request.getRefreshToken());
+    public ResponseEntity<Map<String, String>> logout(
+            @RequestHeader("Authorization") String authHeader,
+            @Valid @RequestBody RefreshRequest request) {
+        String accessToken = authHeader.substring(7);
+        authService.logout(request.getRefreshToken(), accessToken);
         return ResponseEntity.ok(Map.of("message", "Logout successful"));
     }
 }

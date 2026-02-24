@@ -19,6 +19,7 @@ public class JwtService {
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .claims(buildClaims(user))
+                .claim("jti", UUID.randomUUID().toString())
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpiration()))
@@ -54,6 +55,15 @@ public class JwtService {
 
     public String extractRole(String token) {
         return parseClaims(token).get("role", String.class);
+    }
+
+    public String extractTokenId(String token) {
+        return parseClaims(token).getId();
+    }
+
+    public long extractExpiration(String token) {
+        Date exp = parseClaims(token).getExpiration();
+        return Math.max(0, (exp.getTime() - System.currentTimeMillis()) / 1000);
     }
 
     private Claims buildClaims(User user) {

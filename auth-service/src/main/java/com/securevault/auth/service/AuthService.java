@@ -27,6 +27,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -110,12 +111,16 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String refreshTokenString) {
+    public void logout(String refreshTokenString, String accessToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenString)
                 .orElseThrow(() -> new InvalidTokenException("Invalid refresh token"));
 
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);
+
+        String tokenId = jwtService.extractTokenId(accessToken);
+        long expiration = jwtService.extractExpiration(accessToken);
+        tokenBlacklistService.blacklist(tokenId, expiration);
     }
 
     public void saveRefreshToken(User user, String tokenString) {
