@@ -1,6 +1,7 @@
 package com.securevault.auth.service;
 
 import com.securevault.auth.entity.User;
+import com.securevault.auth.exception.TotpVerificationException;
 import com.securevault.auth.repository.UserRepository;
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;

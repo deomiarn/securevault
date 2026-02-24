@@ -118,7 +118,7 @@ public class AuthService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    private void saveRefreshToken(User user, String tokenString) {
+    public void saveRefreshToken(User user, String tokenString) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(tokenString)
                 .user(user)

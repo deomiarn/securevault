@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(TotpVerificationException.class)
-    public ResponseEntity<ErrorResponse> handleTotpVerification(InvalidTokenException ex) {
+    public ResponseEntity<ErrorResponse> handleTotpVerification(TotpVerificationException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 ErrorResponse.builder()
                         .message("TOTP verification failed: " + ex.getMessage())
