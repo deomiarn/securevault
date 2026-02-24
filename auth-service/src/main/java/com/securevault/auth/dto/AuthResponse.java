@@ -14,4 +14,7 @@ public class AuthResponse {
     private String lastName;
     private String role;
     private String message;
+    private String accessToken;
+    private String refreshToken;
+    private Boolean totpRequired;
 }
