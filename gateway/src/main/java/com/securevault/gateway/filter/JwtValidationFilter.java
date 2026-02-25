@@ -31,7 +31,8 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/refresh",
-            "/api/auth/2fa/verify-login"
+            "/api/auth/2fa/verify-login",
+            "/actuator"
     );
 
     @Override
