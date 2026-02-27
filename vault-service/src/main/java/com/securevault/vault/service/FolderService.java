@@ -4,6 +4,7 @@ import com.securevault.vault.dto.CreateFolderRequest;
 import com.securevault.vault.dto.FolderResponse;
 import com.securevault.vault.dto.UpdateFolderRequest;
 import com.securevault.vault.entity.Folder;
+import com.securevault.vault.exception.FolderNotFoundException;
 import com.securevault.vault.repository.FolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class FolderService {
         Folder parentFolder = null;
         if (request.getParentFolderId() != null) {
             parentFolder = folderRepository.findByIdAndUserId(request.getParentFolderId(), userId)
-                    .orElseThrow(() -> new RuntimeException("Parent folder not found"));
+                    .orElseThrow(() -> new FolderNotFoundException("Parent folder not found"));
         }
 
         Folder folder = toFolder(userId, request, parentFolder);
@@ -43,20 +44,20 @@ public class FolderService {
     @Transactional(readOnly = true)
     public FolderResponse getFolder(UUID userId, UUID folderId) {
         Folder folder = folderRepository.findByIdAndUserId(folderId, userId)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
+                .orElseThrow(() -> new FolderNotFoundException("Folder not found"));
         return toFolderResponse(folder);
     }
 
     public FolderResponse updateFolder(UUID userId, UUID folderId, UpdateFolderRequest request) {
         Folder folder = folderRepository.findByIdAndUserId(folderId, userId)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
+                .orElseThrow(() -> new FolderNotFoundException("Folder not found"));
 
         if (request.getName() != null) {
             folder.setName(request.getName());
         }
         if (request.getParentFolderId() != null) {
             Folder newParent = folderRepository.findByIdAndUserId(request.getParentFolderId(), userId)
-                    .orElseThrow(() -> new RuntimeException("Parent folder not found"));
+                    .orElseThrow(() -> new FolderNotFoundException("Parent folder not found"));
             folder.setParentFolder(newParent);
         }
 
@@ -66,13 +67,13 @@ public class FolderService {
 
     public void deleteFolder(UUID userId, UUID folderId) {
         Folder folder = folderRepository.findByIdAndUserId(folderId, userId)
-                .orElseThrow(() -> new RuntimeException("Folder not found"));
+                .orElseThrow(() -> new FolderNotFoundException("Folder not found"));
 
         if (!folder.getSecrets().isEmpty()) {
-            throw new RuntimeException("Folder is not empty. Move or delete secrets first.");
+            throw new IllegalStateException("Folder is not empty. Move or delete secrets first.");
         }
         if (!folder.getChildren().isEmpty()) {
-            throw new RuntimeException("Folder has sub-folders. Delete them first.");
+            throw new IllegalStateException("Folder has sub-folders. Delete them first.");
         }
 
         folderRepository.delete(folder);

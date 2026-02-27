@@ -3,6 +3,9 @@ package com.securevault.vault.service;
 import com.securevault.vault.dto.ShareSecretRequest;
 import com.securevault.vault.dto.SharedSecretResponse;
 import com.securevault.vault.entity.Secret;
+import com.securevault.vault.exception.AccessDeniedException;
+import com.securevault.vault.exception.DuplicateShareException;
+import com.securevault.vault.exception.SecretNotFoundException;
 import com.securevault.vault.entity.SharedSecret;
 import com.securevault.vault.model.Permission;
 import com.securevault.vault.repository.SecretRepository;
@@ -24,14 +27,14 @@ public class SharingService {
 
     public SharedSecretResponse shareSecret(UUID userId, UUID secretId, ShareSecretRequest request) {
         Secret secret = secretRepository.findByIdAndUserId(secretId, userId)
-                .orElseThrow(() -> new RuntimeException("Secret not found or you are not the owner"));
+                .orElseThrow(() -> new AccessDeniedException("Secret not found or you are not the owner"));
 
         if (request.getSharedWithUserId().equals(userId)) {
-            throw new RuntimeException("Cannot share a secret with yourself");
+            throw new IllegalArgumentException("Cannot share a secret with yourself");
         }
 
         if (sharedSecretRepository.findBySecretIdAndSharedWithUserId(secretId, request.getSharedWithUserId()).isPresent()) {
-            throw new RuntimeException("Secret is already shared with this user");
+            throw new DuplicateShareException("Secret is already shared with this user");
         }
 
         SharedSecret sharedSecret = toSharedSecret(userId, request, secret);
@@ -52,7 +55,7 @@ public class SharingService {
     @Transactional(readOnly = true)
     public List<SharedSecretResponse> getSharesForSecret(UUID userId, UUID secretId) {
         secretRepository.findByIdAndUserId(secretId, userId)
-                .orElseThrow(() -> new RuntimeException("Secret not found or you are not the owner"));
+                .orElseThrow(() -> new AccessDeniedException("Secret not found or you are not the owner"));
 
         return sharedSecretRepository.findAllBySecretId(secretId)
                 .stream()
@@ -74,10 +77,10 @@ public class SharingService {
 
     private SharedSecret getShareAsOwner(UUID userId, UUID secretId, UUID shareId) {
         secretRepository.findByIdAndUserId(secretId, userId)
-                .orElseThrow(() -> new RuntimeException("Secret not found or you are not the owner"));
+                .orElseThrow(() -> new AccessDeniedException("Secret not found or you are not the owner"));
 
         return sharedSecretRepository.findById(shareId)
-                .orElseThrow(() -> new RuntimeException("Share not found"));
+                .orElseThrow(() -> new SecretNotFoundException("Share not found"));
     }
 
     private static SharedSecret toSharedSecret(UUID userId, ShareSecretRequest request, Secret secret) {

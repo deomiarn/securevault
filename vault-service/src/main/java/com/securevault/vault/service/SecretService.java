@@ -5,6 +5,9 @@ import com.securevault.vault.dto.SecretResponse;
 import com.securevault.vault.dto.SecretSummaryResponse;
 import com.securevault.vault.dto.UpdateSecretRequest;
 import com.securevault.vault.entity.Folder;
+import com.securevault.vault.exception.AccessDeniedException;
+import com.securevault.vault.exception.FolderNotFoundException;
+import com.securevault.vault.exception.SecretNotFoundException;
 import com.securevault.vault.entity.Secret;
 import com.securevault.vault.entity.SharedSecret;
 import com.securevault.vault.model.EncryptedData;
@@ -35,7 +38,7 @@ public class SecretService {
         Folder folder = null;
         if (request.getFolderId() != null) {
             folder = folderRepository.findByIdAndUserId(request.getFolderId(), userId)
-                    .orElseThrow(() -> new RuntimeException("Folder not found"));
+                    .orElseThrow(() -> new FolderNotFoundException("Folder not found"));
         }
 
         EncryptedData encrypted = encryptionService.encrypt(request.getValue());
@@ -66,7 +69,7 @@ public class SecretService {
             return toSecretResponse(secret, decrypted, true);
         }
 
-        throw new RuntimeException("Secret not found or access denied");
+        throw new AccessDeniedException("Secret not found or access denied");
     }
 
     @Transactional(readOnly = true)
@@ -104,7 +107,7 @@ public class SecretService {
         }
         if (request.getFolderId() != null) {
             Folder folder = folderRepository.findByIdAndUserId(request.getFolderId(), userId)
-                    .orElseThrow(() -> new RuntimeException("Folder not found"));
+                    .orElseThrow(() -> new FolderNotFoundException("Folder not found"));
             secret.setFolder(folder);
         }
 
@@ -117,7 +120,7 @@ public class SecretService {
 
     public void deleteSecret(UUID userId, UUID secretId) {
         Secret secret = secretRepository.findByIdAndUserId(secretId, userId)
-                .orElseThrow(() -> new RuntimeException("Secret not found or you are not the owner"));
+                .orElseThrow(() -> new SecretNotFoundException("Secret not found or you are not the owner"));
 
         sharedSecretRepository.deleteAllBySecretId(secretId);
         secretRepository.delete(secret);
@@ -137,7 +140,7 @@ public class SecretService {
             return sharedSecret.get().getSecret();
         }
 
-        throw new RuntimeException("Secret not found or access denied");
+        throw new AccessDeniedException("Secret not found or access denied");
     }
 
     private SecretResponse toSecretResponse(Secret secret, String decryptedValue, boolean shared) {
