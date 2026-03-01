@@ -24,64 +24,64 @@ Schrittweise Checkliste zum Durcharbeiten. Phasen bauen aufeinander auf.
 - [x] UserRepository mit findByEmail und existsByEmail
 - [x] RegisterRequest DTO mit Validierung
 - [x] AuthResponse DTO
-- [ ] LoginRequest DTO
-- [ ] SecurityConfig (CORS, CSRF, Endpoint-Regeln)
-- [ ] Argon2id PasswordEncoder Bean
-- [ ] JWT Key Pair generieren (RS256) und laden
-- [ ] JwtService (Token erstellen, validieren, Claims extrahieren)
-- [ ] RefreshToken Entity und Repository
-- [ ] AuthService (register, login, refresh, logout)
-- [ ] AuthController (POST /auth/register, /auth/login, /auth/refresh, /auth/logout)
-- [ ] GlobalExceptionHandler (Validation, Auth, NotFound)
-- [ ] TOTP-Service (Secret generieren, QR-Code URI, Code verifizieren)
-- [ ] TwoFactorController (POST /auth/2fa/setup, /auth/2fa/verify, /auth/2fa/disable)
-- [ ] RBAC: Rollen-Enum (ADMIN, MANAGER, USER) und @PreAuthorize Absicherung
-- [ ] Redis Token-Blacklist fuer Logout
-- [ ] Unit Tests fuer AuthService und JwtService
-- [ ] Integration Tests fuer AuthController
+- [x] LoginRequest DTO
+- [x] SecurityConfig (CORS, CSRF, Endpoint-Regeln)
+- [x] Argon2id PasswordEncoder Bean
+- [x] JWT Key Pair generieren (RS256) und laden
+- [x] JwtService (Token erstellen, validieren, Claims extrahieren)
+- [x] RefreshToken Entity und Repository
+- [x] AuthService (register, login, refresh, logout)
+- [x] AuthController (POST /auth/register, /auth/login, /auth/refresh, /auth/logout)
+- [x] GlobalExceptionHandler (Validation, Auth, NotFound)
+- [x] TOTP-Service (Secret generieren, QR-Code URI, Code verifizieren)
+- [x] TwoFactorController (POST /auth/2fa/setup, /auth/2fa/verify, /auth/2fa/disable)
+- [x] RBAC: Rollen-Enum (ADMIN, MANAGER, USER) und @PreAuthorize Absicherung
+- [x] Redis Token-Blacklist fuer Logout
+- [x] Unit Tests fuer AuthService und JwtService
+- [x] Integration Tests fuer AuthController
 
 ---
 
 ## Phase 3 – API Gateway
 
-- [ ] Server-Port auf 8080 konfigurieren
-- [ ] Gateway-Routen definieren (auth-service, vault-service, audit-service)
-- [ ] JWT-Validierungsfilter (Token pruefen, User-ID und Rolle in Header weiterleiten)
-- [ ] Rate-Limiting Filter mit Redis (z.B. 100 req/min pro IP)
-- [ ] CORS-Konfiguration (Frontend Origins)
-- [ ] Health-Check Endpoint
-- [ ] Tests fuer Routing und JWT-Filter
+- [x] Server-Port auf 8080 konfigurieren
+- [x] Gateway-Routen definieren (auth-service, vault-service, audit-service)
+- [x] JWT-Validierungsfilter (Token pruefen, User-ID und Rolle in Header weiterleiten)
+- [x] Rate-Limiting Filter mit Redis (z.B. 100 req/min pro IP)
+- [x] CORS-Konfiguration (Frontend Origins)
+- [x] Health-Check Endpoint
+- [x] Tests fuer Routing und JWT-Filter
 
 ---
 
 ## Phase 4 – Vault Service
 
-- [ ] Secret Entity (id, userId, name, encryptedValue, iv, folder, timestamps)
-- [ ] Folder Entity (id, userId, name, parentFolder)
-- [ ] SharedSecret Entity (secretId, sharedWithUserId, permission)
-- [ ] Repositories fuer Secret, Folder, SharedSecret
-- [ ] EncryptionService (AES-256-GCM encrypt/decrypt)
-- [ ] SecretService (CRUD mit Verschluesselung)
-- [ ] SecretController (GET/POST/PUT/DELETE /secrets)
-- [ ] FolderService und FolderController (/folders)
-- [ ] SharingService und SharingController (/secrets/{id}/share)
-- [ ] DTOs mit Validierung (CreateSecretRequest, SecretResponse, etc.)
-- [ ] Zugriffskontrolle: User sieht nur eigene Secrets + geteilte
-- [ ] Unit Tests fuer EncryptionService
-- [ ] Integration Tests fuer SecretController
+- [x] Secret Entity (id, userId, name, encryptedValue, iv, folder, timestamps)
+- [x] Folder Entity (id, userId, name, parentFolder)
+- [x] SharedSecret Entity (secretId, sharedWithUserId, permission)
+- [x] Repositories fuer Secret, Folder, SharedSecret
+- [x] EncryptionService (AES-256-GCM encrypt/decrypt)
+- [x] SecretService (CRUD mit Verschluesselung)
+- [x] SecretController (GET/POST/PUT/DELETE /secrets)
+- [x] FolderService und FolderController (/folders)
+- [x] SharingService und SharingController (/secrets/{id}/share)
+- [x] DTOs mit Validierung (CreateSecretRequest, SecretResponse, etc.)
+- [x] Zugriffskontrolle: User sieht nur eigene Secrets + geteilte
+- [x] Unit Tests fuer EncryptionService
+- [x] Integration Tests fuer SecretController
 
 ---
 
 ## Phase 5 – Audit Service
 
-- [ ] AuditEvent Entity (id, userId, action, resourceType, resourceId, ip, timestamp)
-- [ ] AuditEventRepository mit Filter-Queries (by user, action, date range)
-- [ ] AuditService (Event speichern)
-- [ ] REST-Endpoint zum Empfangen von Events (POST /audit/events)
-- [ ] AuditQueryController (GET /audit/events mit Filtern und Pagination)
-- [ ] CSV/JSON Export Endpoint
-- [ ] Auth- und Vault-Service: Audit-Events bei relevanten Aktionen senden
-- [ ] Tests fuer AuditService
+- [x] AuditEvent Entity (id, userId, action, resourceType, resourceId, ip, timestamp)
+- [x] AuditEventRepository mit Filter-Queries (by user, action, date range)
+- [x] AuditService (Event speichern)
+- [x] REST-Endpoint zum Empfangen von Events (POST /audit/events)
+- [x] AuditQueryController (GET /audit/events mit Filtern und Pagination)
+- [x] CSV/JSON Export Endpoint
+- [x] Auth- und Vault-Service: Audit-Events bei relevanten Aktionen senden
+- [x] Tests fuer AuditService
 
 ---
 

@@ -103,7 +103,9 @@ public class AuditService {
     }
 
     private Specification<AuditEvent> buildSpecification(AuditFilterRequest filter) {
-        Specification<AuditEvent> spec = Specification.where((Specification<AuditEvent>) null);
+        Specification<AuditEvent> spec = Specification.where(
+                (root, query, cb) -> cb.conjunction()
+        );
 
         if (filter.getUserId() != null) {
             spec = spec.and(AuditEventSpecification.hasUserId(filter.getUserId()));
