@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from "@/pages/LoginPage.tsx";
 import RegisterPage from "@/pages/RegisterPage.tsx";
+import VaultPage from "@/pages/VaultPage.tsx";
 
 function App() {
     return (
@@ -15,7 +16,7 @@ function App() {
                         path="/vault"
                         element={
                             <ProtectedRoute>
-                                <div>Vault (coming soon)</div>
+                                <VaultPage />
                             </ProtectedRoute>
                         }
                     />
