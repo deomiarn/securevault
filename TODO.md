@@ -85,28 +85,33 @@ Schrittweise Checkliste zum Durcharbeiten. Phasen bauen aufeinander auf.
 
 ---
 
-## Phase 6 – Frontend
+## Phase 6a – React App (User-facing)
 
 - [ ] React-Projekt mit Vite + TypeScript initialisieren
-- [ ] Routing Setup (React Router)
-- [ ] Auth-Pages: Login, Register, 2FA-Setup
-- [ ] JWT Token-Handling (Access + Refresh, Axios Interceptor)
-- [ ] Vault-UI: Secrets-Liste, Detail, Erstellen, Bearbeiten, Loeschen
-- [ ] Folder-Navigation (Baumstruktur oder Breadcrumbs)
-- [ ] Sharing-UI: Secret teilen, Berechtigungen verwalten
-- [ ] Admin-Bereich: User-Verwaltung, Audit-Log Einsicht
-- [ ] Responsive Design und Loading States
-- [ ] Error-Handling und Toast-Notifications
+- [ ] API-Client: Axios mit JWT-Interceptors + TypeScript Types
+- [ ] AuthContext + ProtectedRoute Komponente
+- [ ] Login- und Register-Seiten
+- [ ] Vault-Seite: Secrets-Liste, Erstellen, Bearbeiten, Loeschen
+- [ ] Minimales Styling (CSS Modules oder Tailwind)
 
 ---
 
-## Phase 7 – Integration & Production
+## Phase 6b – Angular App (Admin Dashboard)
 
-- [ ] End-to-End Tests (kompletter Flow: Register, Login, Secret erstellen, teilen)
-- [ ] docker-compose.prod.yml (alle Services als Container)
-- [ ] Dockerfiles fuer jeden Service (Multi-Stage Build)
-- [ ] Environment-Variablen Dokumentation
-- [ ] Security Review (OWASP Top 10 Checklist durchgehen)
-- [ ] Performance: Connection Pooling, Caching-Strategie pruefen
-- [ ] CI/CD Pipeline (GitHub Actions: Build, Test, Lint)
-- [ ] README aktualisieren (Screenshots, API-Doku Link)
+- [ ] Angular-Projekt mit Angular CLI initialisieren
+- [ ] AuthService + JWT HttpInterceptor
+- [ ] Routing mit AuthGuard + Login-Seite
+- [ ] Audit-Log-Seite: Tabelle mit Filtern und Pagination
+- [ ] Dashboard: Event-Zaehler nach Typ
+
+---
+
+## Phase 7 – DevOps & CI/CD
+
+- [ ] Dockerfiles fuer alle Services (Multi-Stage Build)
+- [ ] docker-compose.prod.yml mit allen Services containerisiert
+- [ ] Environment-Management und Secrets-Strategie
+- [ ] GitHub Actions CI Pipeline (Build + Test bei Push/PR)
+- [ ] GitHub Actions CD Pipeline (Docker Images bauen + pushen)
+- [ ] Health Checks und Monitoring Basics (Actuator)
+- [ ] README aktualisieren mit Deployment-Anleitung
