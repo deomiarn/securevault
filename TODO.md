@@ -87,22 +87,21 @@ Schrittweise Checkliste zum Durcharbeiten. Phasen bauen aufeinander auf.
 
 ## Phase 6a – React App (User-facing)
 
-- [ ] React-Projekt mit Vite + TypeScript initialisieren
-- [ ] API-Client: Axios mit JWT-Interceptors + TypeScript Types
-- [ ] AuthContext + ProtectedRoute Komponente
-- [ ] Login- und Register-Seiten
-- [ ] Vault-Seite: Secrets-Liste, Erstellen, Bearbeiten, Loeschen
-- [ ] Minimales Styling (CSS Modules oder Tailwind)
+- [x] React-Projekt mit Vite + TypeScript initialisieren
+- [x] API-Client: Axios mit JWT-Interceptors + TypeScript Types
+- [x] AuthContext + ProtectedRoute Komponente
+- [x] Login- und Register-Seiten
+- [x] Vault-Seite: Secrets-Liste, Erstellen, Bearbeiten, Loeschen
 
 ---
 
 ## Phase 6b – Angular App (Admin Dashboard)
 
-- [ ] Angular-Projekt mit Angular CLI initialisieren
-- [ ] AuthService + JWT HttpInterceptor
-- [ ] Routing mit AuthGuard + Login-Seite
-- [ ] Audit-Log-Seite: Tabelle mit Filtern und Pagination
-- [ ] Dashboard: Event-Zaehler nach Typ
+- [x] Angular-Projekt mit Angular CLI initialisieren
+- [x] AuthService + JWT HttpInterceptor
+- [x] Routing mit AuthGuard + Login-Seite
+- [x] Audit-Log-Seite: Tabelle mit Filtern und Pagination
+- [x] Dashboard: Event-Zaehler nach Typ
 
 ---
 
