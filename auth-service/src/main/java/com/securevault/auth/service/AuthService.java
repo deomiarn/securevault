@@ -1,5 +1,6 @@
 package com.securevault.auth.service;
 
+import com.securevault.auth.client.AuditClient;
 import com.securevault.auth.dto.AuthResponse;
 import com.securevault.auth.dto.LoginRequest;
 import com.securevault.auth.dto.RegisterRequest;
@@ -28,6 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenBlacklistService tokenBlacklistService;
+    private final AuditClient auditClient;
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -45,6 +47,9 @@ public class AuthService {
 
         userRepository.save(user);
 
+        auditClient.logAuth(user.getId(), "USER_REGISTERED", "SUCCESS",
+                "User registered: " + user.getEmail(), null);
+
         return AuthResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -57,12 +62,19 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            userRepository.findByEmail(loginRequest.getEmail())
+                    .ifPresent(user -> auditClient.logAuth(user.getId(), "USER_LOGIN_FAILED", "FAILURE",
+                            "Login failed for: " + loginRequest.getEmail(), null));
+            throw e;
+        }
 
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow();
@@ -79,6 +91,9 @@ public class AuthService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         saveRefreshToken(user, refreshToken);
+
+        auditClient.logAuth(user.getId(), "USER_LOGIN", "SUCCESS",
+                "User logged in: " + user.getEmail(), null);
 
         return buildAuthResponse(user, accessToken, refreshToken);
     }
@@ -107,6 +122,9 @@ public class AuthService {
 
         saveRefreshToken(user, newRefreshToken);
 
+        auditClient.logAuth(user.getId(), "TOKEN_REFRESHED", "SUCCESS",
+                "Token refreshed for: " + user.getEmail(), null);
+
         return buildAuthResponse(user, newAccessToken, newRefreshToken);
     }
 
@@ -121,6 +139,10 @@ public class AuthService {
         String tokenId = jwtService.extractTokenId(accessToken);
         long expiration = jwtService.extractExpiration(accessToken);
         tokenBlacklistService.blacklist(tokenId, expiration);
+
+        User user = refreshToken.getUser();
+        auditClient.logAuth(user.getId(), "USER_LOGOUT", "SUCCESS",
+                "User logged out: " + user.getEmail(), null);
     }
 
     public void saveRefreshToken(User user, String tokenString) {

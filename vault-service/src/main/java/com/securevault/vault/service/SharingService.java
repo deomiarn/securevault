@@ -1,5 +1,6 @@
 package com.securevault.vault.service;
 
+import com.securevault.vault.client.AuditClient;
 import com.securevault.vault.dto.ShareSecretRequest;
 import com.securevault.vault.dto.SharedSecretResponse;
 import com.securevault.vault.entity.Secret;
@@ -24,6 +25,7 @@ public class SharingService {
 
     private final SecretRepository secretRepository;
     private final SharedSecretRepository sharedSecretRepository;
+    private final AuditClient auditClient;
 
     public SharedSecretResponse shareSecret(UUID userId, UUID secretId, ShareSecretRequest request) {
         Secret secret = secretRepository.findByIdAndUserId(secretId, userId)
@@ -40,6 +42,9 @@ public class SharingService {
         SharedSecret sharedSecret = toSharedSecret(userId, request, secret);
 
         sharedSecret = sharedSecretRepository.save(sharedSecret);
+
+        auditClient.logShare(userId, secretId, "SECRET_SHARED", "SUCCESS",
+                "Secret shared with user: " + request.getSharedWithUserId());
 
         return toSharedSecretResponse(sharedSecret);
     }
@@ -67,12 +72,19 @@ public class SharingService {
         SharedSecret sharedSecret = getShareAsOwner(userId, secretId, shareId);
         sharedSecret.setPermission(newPermission);
         sharedSecret = sharedSecretRepository.save(sharedSecret);
+
+        auditClient.logShare(userId, secretId, "SHARE_PERMISSION_CHANGED", "SUCCESS",
+                "Permission changed to: " + newPermission);
+
         return toSharedSecretResponse(sharedSecret);
     }
 
     public void revokeShare(UUID userId, UUID secretId, UUID shareId) {
         SharedSecret sharedSecret = getShareAsOwner(userId, secretId, shareId);
         sharedSecretRepository.delete(sharedSecret);
+
+        auditClient.logShare(userId, secretId, "SHARE_REVOKED", "SUCCESS",
+                "Share revoked for user: " + sharedSecret.getSharedWithUserId());
     }
 
     private SharedSecret getShareAsOwner(UUID userId, UUID secretId, UUID shareId) {

@@ -1,5 +1,6 @@
 package com.securevault.vault.service;
 
+import com.securevault.vault.client.AuditClient;
 import com.securevault.vault.dto.CreateFolderRequest;
 import com.securevault.vault.dto.FolderResponse;
 import com.securevault.vault.dto.UpdateFolderRequest;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Transactional
 public class FolderService {
     private final FolderRepository folderRepository;
+    private final AuditClient auditClient;
 
     public FolderResponse createFolder(UUID userId, CreateFolderRequest request) {
         Folder parentFolder = null;
@@ -29,6 +31,9 @@ public class FolderService {
         Folder folder = toFolder(userId, request, parentFolder);
 
         folder = folderRepository.save(folder);
+
+        auditClient.logFolder(userId, folder.getId(), "FOLDER_CREATED", "SUCCESS",
+                "Folder created: " + folder.getName());
 
         return toFolderResponse(folder);
     }
@@ -62,6 +67,10 @@ public class FolderService {
         }
 
         folder = folderRepository.save(folder);
+
+        auditClient.logFolder(userId, folderId, "FOLDER_UPDATED", "SUCCESS",
+                "Folder updated: " + folder.getName());
+
         return toFolderResponse(folder);
     }
 
@@ -77,6 +86,9 @@ public class FolderService {
         }
 
         folderRepository.delete(folder);
+
+        auditClient.logFolder(userId, folderId, "FOLDER_DELETED", "SUCCESS",
+                "Folder deleted: " + folder.getName());
     }
 
     private FolderResponse toFolderResponse(Folder folder) {

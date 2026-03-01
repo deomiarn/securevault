@@ -1,5 +1,6 @@
 package com.securevault.auth.service;
 
+import com.securevault.auth.client.AuditClient;
 import com.securevault.auth.entity.User;
 import com.securevault.auth.exception.TotpVerificationException;
 import com.securevault.auth.repository.UserRepository;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TotpService {
     private final UserRepository userRepository;
+    private final AuditClient auditClient;
 
     private final SecretGenerator secretGenerator = new DefaultSecretGenerator();
     private final TimeProvider timeProvider = new SystemTimeProvider();
@@ -57,6 +59,9 @@ public class TotpService {
 
         user.setTotpEnabled(true);
         userRepository.save(user);
+
+        auditClient.logAuth(userId, "TOTP_ENABLED", "SUCCESS",
+                "TOTP enabled for user", null);
     }
 
     public void disableTotp(UUID userId, String code) {
@@ -70,5 +75,8 @@ public class TotpService {
         user.setTotpEnabled(false);
         user.setTotpSecret(null);
         userRepository.save(user);
+
+        auditClient.logAuth(userId, "TOTP_DISABLED", "SUCCESS",
+                "TOTP disabled for user", null);
     }
 }

@@ -1,5 +1,6 @@
 package com.securevault.vault.service;
 
+import com.securevault.vault.client.AuditClient;
 import com.securevault.vault.dto.CreateSecretRequest;
 import com.securevault.vault.dto.SecretResponse;
 import com.securevault.vault.dto.SecretSummaryResponse;
@@ -33,6 +34,7 @@ public class SecretService {
     private final SharedSecretRepository sharedSecretRepository;
     private final FolderRepository folderRepository;
     private final EncryptionService encryptionService;
+    private final AuditClient auditClient;
 
     public SecretResponse createSecret(UUID userId, CreateSecretRequest request) {
         Folder folder = null;
@@ -47,6 +49,9 @@ public class SecretService {
 
         secret = secretRepository.save(secret);
 
+        auditClient.logSecret(userId, secret.getId(), "SECRET_CREATED", "SUCCESS",
+                "Secret created: " + secret.getName());
+
         return toSecretResponse(secret, request.getValue(), false);
     }
 
@@ -58,6 +63,8 @@ public class SecretService {
             Secret secret = ownSecret.get();
             String decrypted = encryptionService.decrypt(secret.getEncryptedValue(), secret.getIv());
             boolean shared = !sharedSecretRepository.findAllBySecretId(secretId).isEmpty();
+            auditClient.logSecret(userId, secretId, "SECRET_READ", "SUCCESS",
+                    "Secret read: " + secret.getName());
             return toSecretResponse(secret, decrypted, shared);
         }
 
@@ -66,6 +73,8 @@ public class SecretService {
         if (sharedSecret.isPresent()) {
             Secret secret = sharedSecret.get().getSecret();
             String decrypted = encryptionService.decrypt(secret.getEncryptedValue(), secret.getIv());
+            auditClient.logSecret(userId, secretId, "SECRET_READ", "SUCCESS",
+                    "Shared secret read: " + secret.getName());
             return toSecretResponse(secret, decrypted, true);
         }
 
@@ -113,6 +122,9 @@ public class SecretService {
 
         secret = secretRepository.save(secret);
 
+        auditClient.logSecret(userId, secretId, "SECRET_UPDATED", "SUCCESS",
+                "Secret updated: " + secret.getName());
+
         String decrypted = encryptionService.decrypt(secret.getEncryptedValue(), secret.getIv());
         boolean shared = !sharedSecretRepository.findAllBySecretId(secretId).isEmpty();
         return toSecretResponse(secret, decrypted, shared);
@@ -124,6 +136,9 @@ public class SecretService {
 
         sharedSecretRepository.deleteAllBySecretId(secretId);
         secretRepository.delete(secret);
+
+        auditClient.logSecret(userId, secretId, "SECRET_DELETED", "SUCCESS",
+                "Secret deleted: " + secret.getName());
     }
 
     private Secret getSecretWithWriteAccess(UUID userId, UUID secretId) {
