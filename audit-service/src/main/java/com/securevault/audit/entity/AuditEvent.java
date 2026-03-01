@@ -1,8 +1,8 @@
-package com.securevault.entity;
+package com.securevault.audit.entity;
 
-import com.securevault.model.AuditAction;
-import com.securevault.model.EventStatus;
-import com.securevault.model.ResourceType;
+import com.securevault.audit.model.AuditAction;
+import com.securevault.audit.model.EventStatus;
+import com.securevault.audit.model.ResourceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

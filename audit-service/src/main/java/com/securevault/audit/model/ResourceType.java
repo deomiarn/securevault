@@ -1,4 +1,4 @@
-package com.securevault.model;
+package com.securevault.audit.model;
 
 public enum ResourceType {
     USER,
