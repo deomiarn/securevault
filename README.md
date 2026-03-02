@@ -17,8 +17,9 @@ services and a postgresql database with redis for caching and rate limiting.
 | Database   | PostgreSQL 16                             |
 | Cache      | Redis 7                                   |
 | Frontend   | React 18, TypeScript, Vite                |
+| Admin      | Angular 19, TypeScript                    |
 | Security   | JWT RS256, Argon2id, AES-256-GCM, TOTP   |
-| Deployment | Docker, Docker Compose                    |
+| DevOps     | Docker, Docker Compose, GitHub Actions    |
 
 ## Key Features
 
@@ -85,26 +86,78 @@ services have only a single responsibility and can be developed, tested, and dep
   monitoring. Provides filterable logs and export capabilities.
 
 # Getting Started
+
 ## Prerequisites
 - Java 21
 - Node.js 20+
 - Docker & Docker Compose
 
+## Option 1: Development Mode (recommended for daily work)
+
+Development mode runs Postgres and Redis in Docker, but all application services run locally with hot-reload. Code changes are reflected immediately without rebuilding Docker images.
+
 ```bash
 git clone <repository-url>
 cd securevault
 
-# Start PostgreSQL and Redis
-docker-compose up -d postgres redis
+# Copy environment variables
+cp .env.example .env
 
-# Start backend services (each in a separate terminal)
-cd auth-service && ./gradlew bootRun
-cd vault-service && ./gradlew bootRun
-cd audit-service && ./gradlew bootRun
-cd gateway && ./gradlew bootRun
-
-# Start frontend
-cd frontend && npm install && npm run dev
+# Start everything in one terminal
+./dev.sh
 ```
 
-The frontend will be available at `http://localhost:5173` and the API at `http://localhost:8080`.
+This will:
+- Start Postgres and Redis containers (if not already running)
+- Launch all 4 backend services with Gradle (`bootRun`)
+- Start the React frontend with Vite HMR
+- Show color-coded logs from all services
+- Stop everything cleanly with `Ctrl+C`
+
+| Service           | URL                        |
+|-------------------|----------------------------|
+| React Frontend    | http://localhost:5173       |
+| Angular Admin     | http://localhost:4200       |
+| API Gateway       | http://localhost:8080       |
+| Auth Service      | http://localhost:8081       |
+| Vault Service     | http://localhost:8082       |
+| Audit Service     | http://localhost:8083       |
+
+## Option 2: Full Docker (for demos and production)
+
+Everything runs in Docker containers. No local Java or Node.js needed.
+
+```bash
+git clone <repository-url>
+cd securevault
+
+# Copy environment variables
+cp .env.example .env
+
+# Build and start all containers
+docker compose -f docker-compose.prod.yml up --build
+```
+
+| Service           | URL                        |
+|-------------------|----------------------------|
+| React Frontend    | http://localhost:5173       |
+| Angular Admin     | http://localhost:4200       |
+| API Gateway       | http://localhost:8080       |
+
+## Health Checks
+
+All services expose health endpoints via Spring Boot Actuator:
+
+```bash
+curl http://localhost:8080/actuator/health   # Gateway
+curl http://localhost:8081/actuator/health   # Auth Service
+curl http://localhost:8082/actuator/health   # Vault Service
+curl http://localhost:8083/actuator/health   # Audit Service
+```
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+- **CI** (`ci.yml`): Runs on every push and PR to `main`. Tests all backend services in parallel with PostgreSQL and Redis service containers. Builds both frontends.
+- **CD** (`cd.yml`): Runs on push to `main`. Builds Docker images for all services and pushes them to GitHub Container Registry (`ghcr.io`).

@@ -107,10 +107,12 @@ Schrittweise Checkliste zum Durcharbeiten. Phasen bauen aufeinander auf.
 
 ## Phase 7 – DevOps & CI/CD
 
-- [ ] Dockerfiles fuer alle Services (Multi-Stage Build)
-- [ ] docker-compose.prod.yml mit allen Services containerisiert
-- [ ] Environment-Management und Secrets-Strategie
-- [ ] GitHub Actions CI Pipeline (Build + Test bei Push/PR)
-- [ ] GitHub Actions CD Pipeline (Docker Images bauen + pushen)
-- [ ] Health Checks und Monitoring Basics (Actuator)
-- [ ] README aktualisieren mit Deployment-Anleitung
+- [x] dev.sh Development-Starter (alle Services in einem Terminal)
+- [x] Dockerfiles fuer alle Services (Multi-Stage Build)
+- [x] docker-compose.prod.yml mit allen Services containerisiert
+- [x] application-docker.properties fuer Docker-Profil
+- [x] Environment-Management und Secrets-Strategie
+- [x] GitHub Actions CI Pipeline (Build + Test bei Push/PR)
+- [x] GitHub Actions CD Pipeline (Docker Images bauen + pushen)
+- [x] Health Checks und Monitoring Basics (Actuator)
+- [x] README aktualisieren mit Deployment-Anleitung
